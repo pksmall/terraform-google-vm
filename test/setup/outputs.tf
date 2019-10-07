@@ -14,27 +14,15 @@
  * limitations under the License.
  */
 
-resource "random_string" "suffix" {
-  length  = 4
-  special = false
-  upper   = false
+output "project_id" {
+  value = module.project_ci_vm.project_id
 }
 
-provider "google" {
-  project = "${var.project_id}"
-  region  = "us-central1"
+output "sa_key" {
+  value     = google_service_account_key.ci_vm_account.private_key
+  sensitive = true
 }
 
-resource "google_compute_network" "main" {
-  name    = "cft-vm-test-${random_string.suffix.result}"
-
-  auto_create_subnetworks = "false"
-}
-
-resource "google_compute_subnetwork" "main" {
-  name          = "cft-vm-test-${random_string.suffix.result}"
-
-  network       = "${google_compute_network.main.self_link}"
-  private_ip_google_access = true
-  ip_cidr_range = "10.128.0.0/20"
+output "sa_email" {
+  value = google_service_account.ci_vm_account.email
 }

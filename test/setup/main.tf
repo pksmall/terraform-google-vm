@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-resource "random_string" "suffix" {
-  length  = 4
-  special = false
-  upper   = false
-}
+module "project_ci_vm" {
+  source  = "terraform-google-modules/project-factory/google"
+  version = "~> 3.0"
 
-provider "google" {
-  project = "${var.project_id}"
-  region  = "us-central1"
-}
+  name              = "ci-vm-module"
+  random_project_id = true
+  org_id            = var.org_id
+  folder_id         = var.folder_id
+  billing_account   = var.billing_account
 
-resource "google_compute_network" "main" {
-  name    = "cft-vm-test-${random_string.suffix.result}"
-
-  auto_create_subnetworks = "false"
-}
-
-resource "google_compute_subnetwork" "main" {
-  name          = "cft-vm-test-${random_string.suffix.result}"
-
-  network       = "${google_compute_network.main.self_link}"
-  private_ip_google_access = true
-  ip_cidr_range = "10.128.0.0/20"
+  activate_apis = [
+    "cloudresourcemanager.googleapis.com",
+    "storage-api.googleapis.com",
+    "serviceusage.googleapis.com",
+    "compute.googleapis.com",
+    "iam.googleapis.com",
+  ]
 }

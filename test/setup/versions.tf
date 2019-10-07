@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-resource "random_string" "suffix" {
-  length  = 4
-  special = false
-  upper   = false
+terraform {
+  required_version = ">= 0.12"
 }
 
 provider "google" {
-  project = "${var.project_id}"
-  region  = "us-central1"
+  version = "~> 2.13.0"
 }
 
-resource "google_compute_network" "main" {
-  name    = "cft-vm-test-${random_string.suffix.result}"
-
-  auto_create_subnetworks = "false"
-}
-
-resource "google_compute_subnetwork" "main" {
-  name          = "cft-vm-test-${random_string.suffix.result}"
-
-  network       = "${google_compute_network.main.self_link}"
-  private_ip_google_access = true
-  ip_cidr_range = "10.128.0.0/20"
+provider "google-beta" {
+  version = "~> 2.13.0"
 }

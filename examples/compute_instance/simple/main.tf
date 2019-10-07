@@ -41,4 +41,3 @@ module "compute_instance" {
   hostname          = "instance-simple"
   instance_template = module.instance_template.self_link
 }
-
